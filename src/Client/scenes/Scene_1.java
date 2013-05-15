@@ -1,6 +1,10 @@
 package Client.scenes;
 
-import java.awt.*;
+import java.awt.BorderLayout;
+import java.awt.Dimension;
+import java.awt.Graphics;
+import java.awt.Image;
+import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
@@ -9,10 +13,11 @@ import java.io.IOException;
 import javax.imageio.ImageIO;
 import javax.swing.JButton;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JTextField;
 
 import Client.Client;
-import Client.Main;
 
 
 public class Scene_1 extends JFrame implements ActionListener{
@@ -25,6 +30,10 @@ public class Scene_1 extends JFrame implements ActionListener{
 	private RunScene_1 run1;
 	private JButton b_connect;
 	private Image backgroundImage;
+	private JTextField textField;
+	private JPanel mainPanel;
+	private JPanel ipPanel;
+	private JLabel ipLabel;
 	
 	public Scene_1() throws InterruptedException, IOException{
 		System.out.println("Scene_1");
@@ -38,10 +47,23 @@ public class Scene_1 extends JFrame implements ActionListener{
 		b_connect = new JButton ("CONNECT");
 		b_connect.addActionListener(this);		
 		backgroundImage = ImageIO.read(new File("scene1.jpg"));
+		textField=new JTextField("000.000.000.000");
+		textField.setSize(100, 10);
+		mainPanel=new JPanel();
+		ipPanel = new JPanel();
+		ipLabel = new JLabel("IP ADRESS: ");
+		
+		//ipPanel.setLayout(new BorderLayout());
+		ipPanel.add(ipLabel);
+		ipPanel.add(textField);		
+		
+		mainPanel.setLayout(new BorderLayout());
+		mainPanel.add(b_connect,BorderLayout.SOUTH);
+		mainPanel.add(ipPanel,BorderLayout.NORTH);
 		
 		this.getContentPane().add(drawPanel);
 		this.setSize(315, 264);		
-		this.getContentPane().add(BorderLayout.SOUTH,b_connect);
+		this.getContentPane().add(BorderLayout.SOUTH,mainPanel);
 		this.setDefaultCloseOperation(EXIT_ON_CLOSE);	
 		// Get the size of the screen
 		Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
@@ -59,7 +81,10 @@ public class Scene_1 extends JFrame implements ActionListener{
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		Client.Connect(Main.host);
+		this.b_connect.setEnabled(false);
+		
+		if(!Client.Connect(textField.getText()))
+			this.b_connect.setEnabled(true);
 		
 		try {
 			backgroundImage = ImageIO.read(new File("scene1+loading.jpg"));
@@ -68,7 +93,7 @@ public class Scene_1 extends JFrame implements ActionListener{
 			e1.printStackTrace();
 		}
 		
-		this.b_connect.setEnabled(false);
+		
 		drawPanel.repaint();
 		
 		run1.start();	
@@ -86,6 +111,7 @@ public class Scene_1 extends JFrame implements ActionListener{
 		 */
 		private static final long serialVersionUID = 1L;
 
+		@Override
 		public void paintComponent(Graphics g){			
 			g.drawImage(backgroundImage, 0, 0, null);
 			

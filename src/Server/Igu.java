@@ -4,6 +4,11 @@ import java.awt.BorderLayout;
 import java.awt.List;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.net.InetAddress;
+import java.net.NetworkInterface;
+import java.net.SocketException;
+import java.util.Enumeration;
+
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -11,22 +16,49 @@ import javax.swing.JPanel;
 
 public class Igu extends JFrame implements ActionListener{	
 	private static final long serialVersionUID = 1L;
-	private List list;
 	private JLabel label_status;
 	private JButton b_connect,b_discon;
 	private JPanel panel_top;
+	private java.awt.TextArea textArea;
 	
 	
 
 	public Igu (String nom){
 		super(nom);
 		initializeComponents();
-		
+		showIps();
+	}
+
+	private void showIps() {
+		//IP ADRESS
+    	String ip;
+        try {
+            Enumeration<NetworkInterface> interfaces = NetworkInterface.getNetworkInterfaces();
+            while (interfaces.hasMoreElements()) {
+                NetworkInterface iface = interfaces.nextElement();
+                // filters out 127.0.0.1 and inactive interfaces
+                if (iface.isLoopback() || !iface.isUp())
+                    continue;
+
+                Enumeration<InetAddress> addresses = iface.getInetAddresses();
+                while(addresses.hasMoreElements()) {
+                    InetAddress addr = addresses.nextElement();
+                    ip = addr.getHostAddress();
+                    String add=iface.getDisplayName() + " " + ip;
+                    System.out.println(add);
+                    textArea.setText(textArea.getText()+ip+"\n");
+                }
+            }
+        } catch (SocketException e) {
+            throw new RuntimeException(e);
+        }
+        //END IP ADRES
 		
 	}
 
 	private void initializeComponents() {
-		list=new List();
+		new List();
+		textArea = new java.awt.TextArea();
 		label_status=new JLabel("Servidor Apagado");
 		b_connect=new JButton("Connect Server");
 		b_connect.addActionListener(this);
@@ -37,7 +69,7 @@ public class Igu extends JFrame implements ActionListener{
 		panel_top.add(b_connect);
 		panel_top.add(b_discon);
 		this.getContentPane().add(BorderLayout.SOUTH,label_status);
-		this.getContentPane().add(list);		
+		this.getContentPane().add(textArea);		
 		this.getContentPane().add(BorderLayout.NORTH,panel_top);
 		
 	}

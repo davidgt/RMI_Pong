@@ -1,8 +1,8 @@
 package Server;
 
 import java.rmi.RemoteException;
-import java.rmi.registry.Registry;
 import java.rmi.registry.LocateRegistry;
+import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
 import Common.GameData;
 import Common.GameDataSingleton;
@@ -33,6 +33,7 @@ public class Server implements ServerI {
     }
 
     public static void conectar() {
+    	
     	try {
     	    Server obj = new Server();
     	    ServerI stub = (ServerI) UnicastRemoteObject.exportObject(obj,0);

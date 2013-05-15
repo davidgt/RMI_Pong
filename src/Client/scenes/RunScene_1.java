@@ -1,6 +1,5 @@
 package Client.scenes;
 
-import java.awt.event.KeyListener;
 import java.rmi.RemoteException;
 
 import Client.Client;
@@ -9,6 +8,7 @@ import Client.Client;
 public class RunScene_1 extends Thread{
 	public int player;
 	
+	@Override
 	public void run(){			
 		Boolean exit=false;
 		try {
@@ -44,7 +44,7 @@ public class RunScene_1 extends Thread{
 			System.out.println("Bucle...1");			
 		}
 		
-		Game_Scene gameScene=new Game_Scene(player);		
+		new Game_Scene(player);		
 		
 	}
 }

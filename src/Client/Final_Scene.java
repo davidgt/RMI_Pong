@@ -17,6 +17,10 @@ import javax.swing.JPanel;
 
 public class Final_Scene extends JFrame implements ActionListener{
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private MyDrawPanel drawPanel;
 	private JButton b_exit;
 	private Image backgroundImage;
@@ -75,6 +79,7 @@ public class Final_Scene extends JFrame implements ActionListener{
 		 */
 		private static final long serialVersionUID = 1L;
 
+		@Override
 		public void paintComponent(Graphics g){			
 			g.drawImage(backgroundImage, 0, 0, null);
 			

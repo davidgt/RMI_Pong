@@ -15,6 +15,7 @@ public class key_status_normal implements Game_Scene_key_status {
 		this.GS = GS;
 	}
 	
+	@Override
 	public void keyTyped(KeyEvent e) {
 		try {
 			GameData gameData=Client.stub.getGameData();

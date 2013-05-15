@@ -2,30 +2,21 @@ package Client.scenes;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Toolkit;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
-import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.IOException;
 import java.rmi.RemoteException;
 
-import javax.imageio.ImageIO;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.plaf.BorderUIResource;
-
 import Client.Client;
 import Client.Final_Scene;
 import Client.scenes.game_scene.Game_Scene_key_status;
 import Client.scenes.game_scene.key_status_normal;
-import Common.GameData;
 import Common.GameDataSingleton;
-import Client.Sounds.*;
 
 public class Game_Scene extends JFrame implements Runnable, KeyListener{
 	
@@ -49,7 +40,7 @@ public class Game_Scene extends JFrame implements Runnable, KeyListener{
 	
 	private Game_Scene_key_status key_status;
 	
-	private Boolean[] soundEffects;
+	//private Boolean[] soundEffects;
 	
 	public Game_Scene (int player){
 		timerOn=true;
@@ -206,6 +197,7 @@ public class Game_Scene extends JFrame implements Runnable, KeyListener{
 		 */
 		private static final long serialVersionUID = 1L;
 
+		@Override
 		public void paintComponent(Graphics g){
 	         g.setColor(Color.BLACK);
 	         g.fillRect(0,0,this.getWidth(),this.getHeight());
