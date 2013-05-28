@@ -20,6 +20,6 @@ public class ClientMain {
 		}
 		
 		
-		host=(args.length < 1) ? null : args[0];		
+		//host=(args.length < 1) ? null : args[0];
 	}
 }

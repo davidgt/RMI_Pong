@@ -9,10 +9,10 @@ public class Client {
 	public static ServerI stub;
 	public Client(){}
 	
-	public static Boolean Connect(String host) {		
+	public static Boolean Connect(String host, int port ) {		
 		//System.setSecurityManager(new RMISecurityManager());
 		try {
-			Registry registry = LocateRegistry.getRegistry(host);
+			Registry registry = LocateRegistry.getRegistry(host, port);
 			stub = (ServerI) registry.lookup("server");		    
 			String response = stub.greet();			
 			System.out.println("response: " + response);

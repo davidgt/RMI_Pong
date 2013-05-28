@@ -1,7 +1,7 @@
 package Server;
 
 import java.awt.BorderLayout;
-import java.awt.List;
+//import java.awt.List;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.net.InetAddress;
@@ -21,7 +21,7 @@ public class Igu extends JFrame implements ActionListener{
 	private JPanel panel_top;
 	private java.awt.TextArea textArea;
 	
-	
+	private int port;
 
 	public Igu (String nom){
 		super(nom);
@@ -57,7 +57,6 @@ public class Igu extends JFrame implements ActionListener{
 	}
 
 	private void initializeComponents() {
-		new List();
 		textArea = new java.awt.TextArea();
 		label_status=new JLabel("Servidor Apagado");
 		b_connect=new JButton("Connect Server");
@@ -84,14 +83,27 @@ public class Igu extends JFrame implements ActionListener{
 	}
 
 	private void Disconnect() {
-		System.out.println("Discon");
-		
+		if(Server.desconectar(port)){
+			System.out.println("---- SERVER OFF ----");
+	        textArea.setText(textArea.getText()+"---- SERVER OFF ----\n");
+
+		} else {
+			System.out.println("---- Error al apagar el servidor ----");
+	        textArea.setText(textArea.getText()+"---- Error al apagar el servidor ----\n");
+		}
 	}
 
 	private void Connect() {
 		System.out.println("Connect");
-		Server.conectar();
-		label_status.setText("Server Connected");
+		port = Server.conectar();
+		while(port <= 0){
+			port = Server.conectar();
+			System.out.println("---- CANNOT USE PORT: "+String.valueOf(port)+" ----");
+	        textArea.setText(textArea.getText()+"---- CANNOT USE PORT: "+String.valueOf(port)+" ----\n");
+		}
+		label_status.setText("Server Connected at port: " + String.valueOf(port));
+		System.out.println("---- SERVER CONECTED: "+String.valueOf(port)+" ----");
+        textArea.setText(textArea.getText()+"---- SERVER CONECTED: "+String.valueOf(port)+" ----\n");
 	}
 
 }

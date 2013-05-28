@@ -1,9 +1,16 @@
 package Server;
 
+//import java.rmi.NotBoundException;
+import java.rmi.AccessException;
+import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
+import java.rmi.UnmarshalException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
+
+//import javax.xml.bind.ParseConversionEvent;
+
 import Common.GameData;
 import Common.GameDataSingleton;
 import Common.ServerI;
@@ -32,28 +39,52 @@ public class Server implements ServerI {
 		}*/
     }
 
-    public static void conectar() {
-    	
+    public static int conectar() {
+    	int port = ((int) (Math.random() * 1000)) + 2000; 
     	try {
     	    Server obj = new Server();
-    	    ServerI stub = (ServerI) UnicastRemoteObject.exportObject(obj,0);
-
+    	    ServerI stub = (ServerI) UnicastRemoteObject.exportObject(obj,port);
+    	    
     	    // Bind the remote object's stub in the registry
-    	    Registry registry = LocateRegistry.getRegistry();
+    	    Registry registry = LocateRegistry.createRegistry(port);
+    	    //Registry registry = LocateRegistry.getRegistry();
     	    registry.rebind("server", stub);
-
+    	    
     	    System.err.println("Server ready");
+    	    return port;
     	} catch (Exception e) {
     	    System.err.println("Server exception: " + e.toString());
     	    e.printStackTrace();
     	}
+    	return -1;
 		
 	}
+    
+    public static boolean desconectar(int port){
+    	try { 
+    	    Registry registry = LocateRegistry.getRegistry(port);
+            registry.unbind("server");
+            Thread.sleep(1000);
+            return true;
+            //UnicastRemoteObject.unexportObject(this, true);
+    	} catch (NotBoundException e) {
+            System.err.println("Error shutting down the server - could not unbind the registry"+ e.getMessage());
+        } catch (InterruptedException e) {
+        	System.err.println("Unable to sleep when shutting down the server"+ e.getMessage());
+        } catch (AccessException e) {
+        	System.err.println("Access Exception"+ e.getMessage());
+        } catch (UnmarshalException e) {
+            System.err.println("UnMarshall Exception"+ e.getMessage());
+        } catch (RemoteException e) {
+        	System.err.println("Remote Exception"+ e.getMessage());
+        }
+	return false;
+    }
 
 	@Override
 	public String greet() throws RemoteException {
 		// TODO Auto-generated method stub
-		return "Hello, im the Srver";
+		return "Hello, im the Server";
 	}
 
 	@Override

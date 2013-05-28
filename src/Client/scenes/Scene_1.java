@@ -31,6 +31,7 @@ public class Scene_1 extends JFrame implements ActionListener{
 	private JButton b_connect;
 	private Image backgroundImage;
 	private JTextField textField;
+	private JTextField textField_port;
 	private JPanel mainPanel;
 	private JPanel ipPanel;
 	private JLabel ipLabel;
@@ -47,8 +48,10 @@ public class Scene_1 extends JFrame implements ActionListener{
 		b_connect = new JButton ("CONNECT");
 		b_connect.addActionListener(this);		
 		backgroundImage = ImageIO.read(new File("scene1.jpg"));
-		textField=new JTextField("000.000.000.000");
+		textField=new JTextField("127.0.0.1");
 		textField.setSize(100, 10);
+		textField_port=new JTextField("1099");
+		textField_port.setSize(30, 10);
 		mainPanel=new JPanel();
 		ipPanel = new JPanel();
 		ipLabel = new JLabel("IP ADRESS: ");
@@ -83,7 +86,7 @@ public class Scene_1 extends JFrame implements ActionListener{
 	public void actionPerformed(ActionEvent e) {
 		this.b_connect.setEnabled(false);
 		
-		if(!Client.Connect(textField.getText()))
+		if(!Client.Connect(textField.getText(), textField_port.getText()))
 			this.b_connect.setEnabled(true);
 		
 		try {
