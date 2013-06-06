@@ -24,25 +24,25 @@ public class Server implements ServerI {
 	private int winner;	
 	private int[] score;
 	private int timer;
-	//private Boolean[] soundEffects;//[3]{racket,wall,goal}
+	private Igu GUI;
 	
-	
-    public Server() {
+    public Server(Igu gui) {
     	this.playerNumber=0;
     	this.gameData= GameDataSingleton.getInstance();
     	this.winner=0;
     	this.timer=0;
-    	score=new int[2]; 
+    	score=new int[2];
+    	this.GUI = gui;
     	/*soundEffects=new Boolean[3];
     	for(int i=0;i<soundEffects.length;i++){
 			soundEffects[i]=false;
 		}*/
     }
 
-    public static int conectar() {
+    public static int conectar(Igu gui) {
     	int port = ((int) (Math.random() * 1000)) + 2000; 
     	try {
-    	    Server obj = new Server();
+    	    Server obj = new Server(gui);
     	    ServerI stub = (ServerI) UnicastRemoteObject.exportObject(obj,port);
     	    
     	    // Bind the remote object's stub in the registry
@@ -57,7 +57,6 @@ public class Server implements ServerI {
     	    e.printStackTrace();
     	}
     	return -1;
-		
 	}
     
     public static boolean desconectar(int port){
@@ -101,6 +100,11 @@ public class Server implements ServerI {
 		return this.gameData;
 	}
 
+	public GameData getGD(){
+		return this.gameData;
+	}
+	
+	
 	@Override
 	public void setPlayerPos(int player, int pos) throws RemoteException {
 		if(player==1)
@@ -125,84 +129,86 @@ public class Server implements ServerI {
 	@Override
 	public void gameEngineTick(int player) throws RemoteException {
 		if(player==1){	
-			/*for(int i=0;i<soundEffects.length;i++){
-				soundEffects[i]=false;
-			}*/
-			
-			//====================================GAME_Engine=========================================//
-			//---------------Ball-Collisions-------------------//
-			//---------------Ball_Frame-----------------------//
 			//Colision techo
-			if(gameData.getPosBally() < 0){
-				gameData.setY_sig(true);
-				//soundEffects[1]=true;
-			}
+			colision_top();
 			//Colision suelo
-			if(gameData.getPosBally() > GameData.frameHeigth+(GameData.ballSize)-102){
-				gameData.setY_sig(false);
-				//soundEffects[1]=true;
-			}
+			colision_bottom();
+			//Colisón derecha
+			colision_right();
+			//Colisión izquierda
+			colision_left();
 			
-			//--------------Ball-Player-----------------------//
-			if(colisionPlayer2()){
-				gameData.setX_sig(false);
-				//soundEffects[0]=true;
-				System.out.println("Colision P2");
-			}
-			if(colisionPlayer1()){
-				gameData.setX_sig(true);
-				//soundEffects[0]=true;
-				System.out.println("Colision P1");
-			}
+			//Colisón paleta jugador 2
+			if(colisionPlayer2()){				gameData.setPosX_sig(false); 	}
+			//Colisón paleta jugador 1
+			if(colisionPlayer1()){				gameData.setPosX_sig(true); 	}
+			
 			//--------------Ball-Move--------------------------//
-			if(gameData.getX_sig() && gameData.getY_sig()){
-				gameData.setPosBallx(gameData.getPosBallx()+gameData.getSpeed());
-				gameData.setPosBally(gameData.getPosBally()+gameData.getSpeed());
-				System.out.println("1: "+gameData.getPosBallx()+" "+gameData.getPosBally());
-			}
-			if(!gameData.getX_sig() && gameData.getY_sig()){
-				gameData.setPosBallx(gameData.getPosBallx()-gameData.getSpeed());
-				gameData.setPosBally(gameData.getPosBally()+gameData.getSpeed());
-				System.out.println("2: "+gameData.getPosBallx()+" "+gameData.getPosBally());
-			}
-			if(gameData.getX_sig() && !gameData.getY_sig()){
-				gameData.setPosBallx(gameData.getPosBallx()+gameData.getSpeed());
-				gameData.setPosBally(gameData.getPosBally()-gameData.getSpeed());
-				System.out.println("3: "+gameData.getPosBallx()+" "+gameData.getPosBally());
-			}
-			if(!gameData.getX_sig() && !gameData.getY_sig()){
-				gameData.setPosBallx(gameData.getPosBallx()-gameData.getSpeed());
-				gameData.setPosBally(gameData.getPosBally()-gameData.getSpeed());
-				System.out.println("4: "+gameData.getPosBallx()+" "+gameData.getPosBally());
-			}
+			move_ball();
 			//-------------Score Engine-----------------//
-			score=gameData.getScore();
-			if(gameData.getPosBallx()>GameData.frameWidth){
-				score[0]++;
-				gameData.resetGame();
-				//soundEffects[2]=true;
-			}
-			if(gameData.getPosBallx()<0){
-				score[1]++;	
-				gameData.resetGame();
-				//soundEffects[2]=true;
-			}
-			if(score[0]>=5)
-				this.winner=1;
-			if(score[1]>=5)
-				this.winner=2;
+			if(score[0]>=5)				this.winner=1;
+			if(score[1]>=5)				this.winner=2;
 				
-			gameData.setScore(score);
 			//------------------SpeedIncrease--------------//
 			if(timer>900){
 				gameData.setSpeed(gameData.getSpeed()+2);
 				timer=0;
 			}
 			timer++;
-			//===========================================================================================//	
 		}	
 	}
 
+	public void colision_top(){
+		if(gameData.getPosBally() < 0){
+			gameData.setPosY_sig(true);
+			gameData.setPosBally(0);
+		}
+	}
+	public void colision_bottom(){
+		if(gameData.getPosBally() > GameData.frameHeigth+(GameData.ballSize)-102){
+			gameData.setPosY_sig(false);
+			gameData.setPosBally(GameData.frameHeigth+(GameData.ballSize)-102);
+		}
+	}
+	public void colision_left(){
+		if(gameData.getPosBallx()<0){
+			score=gameData.getScore();
+			score[1]++;
+			this.GUI.showGameStatus(this.gameData);
+			gameData.setScore(score);
+			gameData.resetGame();
+		}
+	}
+	public void colision_right(){
+		if(gameData.getPosBallx()>GameData.frameWidth){
+			score=gameData.getScore();
+			score[0]++;
+			this.GUI.showGameStatus(this.gameData);
+			gameData.setScore(score);
+			gameData.resetGame();
+		}
+		
+	}
+	
+	public void move_ball(){
+		if(gameData.getX_sig() && gameData.getY_sig()){
+			gameData.setPosBallx(gameData.getPosBallx()+gameData.getSpeed());
+			gameData.setPosBally(gameData.getPosBally()+gameData.getSpeed());
+		}
+		if(!gameData.getX_sig() && gameData.getY_sig()){
+			gameData.setPosBallx(gameData.getPosBallx()-gameData.getSpeed());
+			gameData.setPosBally(gameData.getPosBally()+gameData.getSpeed());
+		}
+		if(gameData.getX_sig() && !gameData.getY_sig()){
+			gameData.setPosBallx(gameData.getPosBallx()+gameData.getSpeed());
+			gameData.setPosBally(gameData.getPosBally()-gameData.getSpeed());
+		}
+		if(!gameData.getX_sig() && !gameData.getY_sig()){
+			gameData.setPosBallx(gameData.getPosBallx()-gameData.getSpeed());
+			gameData.setPosBally(gameData.getPosBally()-gameData.getSpeed());
+		}
+	}
+	
 	private boolean colisionPlayer1() {		
 		if(gameData.getPosBallx() > 10 && gameData.getPosBallx() < 10 + GameData.racketWidth){
 			if(gameData.getPosBally() < gameData.getPos(1)+GameData.racketHeigth && gameData.getPosBally() > gameData.getPos(1))

@@ -3,40 +3,23 @@ package Common.Objects;
 import java.io.Serializable;
 
 
-public class Racket implements Serializable{
+public class Racket extends PosEntity implements Serializable{
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	private PosEntity position;
+	
 	
 	//Constructors
 	public Racket(){
-		this.position = new PosEntity();
+		super();
 	}
 	public Racket(int posx, int posy){
-		this.position = new PosEntity();
-		this.position.setX(posx);
-		this.position.setY(posy);
+		super(posx, posy);
 	}
 
-	public int getPosx() {
-		return this.position.getX();
-	}
-	
-	public void setPosx(int posx) {
-		this.position.setX(posx);
-	}
-
-	public int getPosy() {
-		return position.getY();
-	}
-
-	public void setPosy(int posy) {
-		this.position.setY(posy);
-	}
-
-	public Boolean Colision(Entity entity) {
-		return this.position.Colision(entity);
-	}
+	public int getPosX(){return this.getX();}
+	public int getPosY(){return this.getY();}
+	public void setPosX(int x){this.setX(x);}
+	public void setPosY(int y){this.setY(y);}
 }

@@ -95,15 +95,23 @@ public class Igu extends JFrame implements ActionListener{
 
 	private void Connect() {
 		System.out.println("Connect");
-		port = Server.conectar();
+		port = Server.conectar(this);
 		while(port <= 0){
-			port = Server.conectar();
+			port = Server.conectar(this);
 			System.out.println("---- CANNOT USE PORT: "+String.valueOf(port)+" ----");
 	        textArea.setText(textArea.getText()+"---- CANNOT USE PORT: "+String.valueOf(port)+" ----\n");
 		}
 		label_status.setText("Server Connected at port: " + String.valueOf(port));
 		System.out.println("---- SERVER CONECTED: "+String.valueOf(port)+" ----");
         textArea.setText(textArea.getText()+"---- SERVER CONECTED: "+String.valueOf(port)+" ----\n");
+	}
+	
+	public void showGameStatus(Common.GameData gameData){
+		textArea.setText(textArea.getText()+"---- IP ----\n");
+		showIps();
+		textArea.setText(textArea.getText()+"---- Juego: ----\n");
+		textArea.setText(String.valueOf(gameData.getScore()[0])+" - "+ String.valueOf(gameData.getScore()[1]));
+		
 	}
 
 }

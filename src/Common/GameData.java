@@ -41,7 +41,7 @@ public class GameData implements Serializable{
 		return Y_sig;
 	}
 
-	public void setY_sig(Boolean y_sig) {
+	public void setPosY_sig(Boolean y_sig) {
 		Y_sig = y_sig;
 	}
 
@@ -49,16 +49,16 @@ public class GameData implements Serializable{
 		return X_sig;
 	}
 
-	public void setX_sig(Boolean x_sig) {
+	public void setPosX_sig(Boolean x_sig) {
 		X_sig = x_sig;
 	}
 
 	public int getPos(int user) {
 		switch(user){
 		case 1: 
-			return racket1.getPosy();
+			return racket1.getPosY();
 		case 2:
-			return racket2.getPosy();
+			return racket2.getPosY();
 		default:
 			return 0;
 		}
@@ -67,27 +67,31 @@ public class GameData implements Serializable{
 	public void setPos(int user, int pos) {
 		switch(user){
 		case 1:
-			this.racket1.setPosy(pos);
+			this.racket1.setPosY(pos);
 			break;
 		case 2:
-			this.racket2.setPosy(pos);
+			this.racket2.setPosY(pos);
 			break;
 		}
 	}
 
 	public int getPosBallx() {
-		return ball.getPosx();
+		return ball.getPosX();
 	}
 
+	public void setPosBally(int posBally){
+		this.ball.setPosY(posBally);
+	}
+	
 	public void setPosBallx(int posBallx) {
-		this.ball.setPosx(posBallx);
+		this.ball.setPosX(posBallx);
 	}
 	public int getPosBally() {
-		return ball.getPosy();
+		return ball.getPosY();
 	}
 
 	public void setPosBally(int posBally) {
-		this.ball.setPosy(posBally);
+		this.ball.setPosY(posBally);
 	}
 
 	public int[] getScore() {
@@ -106,8 +110,8 @@ public class GameData implements Serializable{
 		this.speed=speed;
 	}
 	public void resetGame(){
-		ball.setPosx(390);
-		ball.setPosy(290);		
+		ball.setPosX(390);
+		ball.setPosY(290);		
 		speed=5;		
 	}
 

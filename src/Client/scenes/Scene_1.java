@@ -47,7 +47,7 @@ public class Scene_1 extends JFrame implements ActionListener{
 	private void initializeComponents() throws IOException{
 		b_connect = new JButton ("CONNECT");
 		b_connect.addActionListener(this);		
-		backgroundImage = ImageIO.read(new File("scene1.jpg"));
+		backgroundImage = ImageIO.read(new File("scene1.jpg")); 
 		textField=new JTextField("127.0.0.1");
 		textField.setSize(100, 10);
 		textField_port=new JTextField("1099");
@@ -86,7 +86,7 @@ public class Scene_1 extends JFrame implements ActionListener{
 	public void actionPerformed(ActionEvent e) {
 		this.b_connect.setEnabled(false);
 		
-		if(!Client.Connect(textField.getText(), textField_port.getText()))
+		if(!Client.Connect(textField.getText(), Integer.valueOf(textField_port.getText())))
 			this.b_connect.setEnabled(true);
 		
 		try {
